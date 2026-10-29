@@ -1,0 +1,20 @@
+# AWS Configuration
+aws_region = "us-west-2"
+# Select your delegated-administrator profile through AWS_PROFILE.
+
+# StackSet Configuration
+stack_set_name       = "crossplane-provider-roles"
+crossplane_role_name = "crossplane-provider-aws"
+
+# Platform account: delegated administrator and host of infra management clusters.
+management_account_id = "<PLATFORM_ACCOUNT_ID>"
+
+# Deployment Targets
+# Get OU IDs with: aws organizations list-organizational-units-for-parent --parent-id r-xxxx
+target_organizational_unit_ids = [
+  "<WORKLOAD_OU_ID>",
+]
+
+# SECURITY NOTE:
+# This creates a role with AdministratorAccess (FULL ADMIN)
+# Lock down permissions per account/deployment in production

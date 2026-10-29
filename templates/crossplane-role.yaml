@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Crossplane Provider IAM Role - ADMIN ACCESS (lock down per account in production)'
+
+Resources:
+  CrossplaneProviderRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${role_name}
+      Description: 'IAM role for Crossplane to manage resources - FULL ADMIN ACCESS'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::${management_account_id}:root'
+            Action:
+              - 'sts:AssumeRole'
+              - 'sts:TagSession'
+            Condition:
+              StringLike:
+                'aws:PrincipalArn': 'arn:aws:iam::${management_account_id}:role/infra-plane-*-crossplane-role'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
+      Tags:
+        - Key: ManagedBy
+          Value: Crossplane
+        - Key: Purpose
+          Value: Infrastructure-Provisioning
+        - Key: SecurityNote
+          Value: 'ADMIN-ACCESS-LOCK-DOWN-IN-PRODUCTION'
+
+Outputs:
+  RoleArn:
+    Description: ARN of the Crossplane provider role
+    Value: !GetAtt CrossplaneProviderRole.Arn
+    Export:
+      Name: !Sub '$${AWS::StackName}-RoleArn'
+
+  RoleName:
+    Description: Name of the Crossplane provider role
+    Value: !Ref CrossplaneProviderRole
+    Export:
+      Name: !Sub '$${AWS::StackName}-RoleName'
+
+  SecurityWarning:
+    Description: Security notice
+    Value: 'This role has FULL ADMIN ACCESS. Lock down per account/deployment in production.'

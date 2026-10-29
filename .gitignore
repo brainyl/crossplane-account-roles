@@ -1,0 +1,23 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Private plans and local artifacts
+*.tfplan
+tfplan
+*.tfvars.json
+.local/
+.DS_Store
+__pycache__/
+.env
+.env.*
